@@ -29,7 +29,7 @@ public class MockHttpMessageHandler : HttpMessageHandler, IMockHttpMessageHandle
 
     public IMockHttpMessageHandler RespondWith(IMockResponse mockResponse)
     {
-        _mockResponsesWithReturnCount.Add(mockResponse, 0);
+        _mockResponsesWithReturnCount.TryAdd(mockResponse, 0);
         return this;
     }
 
@@ -37,7 +37,7 @@ public class MockHttpMessageHandler : HttpMessageHandler, IMockHttpMessageHandle
     {
         foreach (var mockResponse in mockResponses)
         {
-            _mockResponsesWithReturnCount.Add(mockResponse, 0);
+            _mockResponsesWithReturnCount.TryAdd(mockResponse, 0);
         }
 
         return this;

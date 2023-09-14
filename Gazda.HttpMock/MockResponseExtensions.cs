@@ -5,9 +5,12 @@ namespace Gazda.HttpMock;
 
 public static class MockResponseExtensions
 {
-    public static IMockResponse RespondWith(this IMockHttpMessageHandler _, HttpResponseMessage response)
+    public static IMockResponse PrepareMockResponse(this IMockHttpMessageHandler mockHttpMessageHandler,
+        HttpResponseMessage response)
     {
-        return new MockResponse(response);
+        var mockResponse = new MockResponse(response);
+        mockHttpMessageHandler.RespondWith(mockResponse);
+        return mockResponse;
     }
 
     public static IMockResponse For(this IMockResponse mockResponse, Predicate<HttpRequestMessage> requestPredicate)

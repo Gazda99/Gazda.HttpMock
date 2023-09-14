@@ -7,14 +7,14 @@ namespace Gazda.HttpMock.Tests;
 public class MockResponseExtensionsTests
 {
     [Test]
-    public void RespondWith_Should_Return_New_Mock_Response()
+    public void PrepareMockResponse_Should_Return_New_Mock_Response()
     {
         //GIVEN 
         var mockHttpMessageHandler = Substitute.For<IMockHttpMessageHandler>();
         var response = Substitute.For<HttpResponseMessage>();
 
         //WHEN - THEN
-        mockHttpMessageHandler.RespondWith(response);
+        var res = mockHttpMessageHandler.PrepareMockResponse(response);
 
         Assert.Pass();
     }
