@@ -41,6 +41,24 @@ public class MockHttpMessageHandlerTests
     }
 
     [Test]
+    public void AssertResponseReturned_Should_Return_False_When_No_Responses()
+    {
+        //GIVEN
+        var mockResponse = Substitute.For<IMockResponse>();
+        var mockHttpMessageHandler = new MockHttpMessageHandler();
+
+        var client = mockHttpMessageHandler.ToHttpClient();
+        client.BaseAddress = new Uri(new Faker().Internet.Url());
+
+        //WHEN - THEN
+        var mockResponseCheck = mockHttpMessageHandler.AssertResponseReturned(mockResponse, 0);
+        var mockResponseCheck2 = mockHttpMessageHandler.AssertResponseReturned(mockResponse, 1);
+        //THEN
+        Assert.That(mockResponseCheck, Is.True);
+        Assert.That(mockResponseCheck2, Is.False);
+    }
+
+    [Test]
     public async Task CountResponseReturns_Should_Return_Count_Of_Response_Returns()
     {
         //GIVEN

@@ -52,7 +52,7 @@ public class MockHttpMessageHandler : HttpMessageHandler, IMockHttpMessageHandle
     {
         var isFound = _mockResponsesWithReturnCount.TryGetValue(response, out var found);
         if (!isFound)
-            return false;
+            return times == 0;
 
         return times == found;
     }
