@@ -1,6 +1,6 @@
 ﻿namespace Gazda.HttpMock.Matchers;
 
-public class MockHttpUrlMatcher : IMockHttpMatcher
+internal class MockHttpUrlMatcher : IMockHttpMatcher
 {
     private readonly Predicate<string> _urlPredicate;
 

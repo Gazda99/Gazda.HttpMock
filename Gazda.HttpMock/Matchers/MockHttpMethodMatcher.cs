@@ -1,6 +1,6 @@
 ﻿namespace Gazda.HttpMock.Matchers;
 
-public class MockHttpMethodMatcher : IMockHttpMatcher
+internal class MockHttpMethodMatcher : IMockHttpMatcher
 {
     private readonly HttpMethod _method;
 
