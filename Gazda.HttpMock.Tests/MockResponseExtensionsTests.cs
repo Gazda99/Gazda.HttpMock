@@ -20,6 +20,20 @@ public class MockResponseExtensionsTests
     }
 
     [Test]
+    public void For_Should_Add_MockHttpMatcher()
+    {
+        //GIVEN
+        var mockResponse = Substitute.For<IMockResponse>();
+        var predicate = Substitute.For<Predicate<HttpRequestMessage>>();
+
+        //WHEN
+        mockResponse.For(predicate);
+
+        //THEN
+        mockResponse.Received(1).AddMatcher(Arg.Is<IMockHttpMatcher>(x => x is MockHttpMatcher));
+    }
+
+    [Test]
     public void ForMethod_Should_Add_MockHttpUrlMatcher()
     {
         //GIVEN
@@ -73,5 +87,19 @@ public class MockResponseExtensionsTests
 
         //THEN
         mockResponse.Received(1).AddMatcher(Arg.Is<IMockHttpMatcher>(x => x is MockHttpContentMatcher));
+    }
+
+    [Test]
+    public void ForCustomMatch_Should_Add_IMockHttpMatcher()
+    {
+        //GIVEN
+        var mockResponse = Substitute.For<IMockResponse>();
+        var customMatcher = Substitute.For<IMockHttpMatcher>();
+
+        //WHEN
+        mockResponse.ForCustomMatch(customMatcher);
+
+        //THEN
+        mockResponse.Received(1).AddMatcher(Arg.Is<IMockHttpMatcher>(x => x != null));
     }
 }

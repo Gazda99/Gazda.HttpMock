@@ -10,6 +10,13 @@ public static class MockResponseExtensions
         return new MockResponse(response);
     }
 
+    public static IMockResponse For(this IMockResponse mockResponse, Predicate<HttpRequestMessage> requestPredicate)
+    {
+        var mockHttpMethodMatcher = new MockHttpMatcher(requestPredicate);
+        mockResponse.AddMatcher(mockHttpMethodMatcher);
+        return mockResponse;
+    }
+
     public static IMockResponse ForUrl(this IMockResponse mockResponse,
         Predicate<string> urlPredicate)
     {
@@ -39,6 +46,12 @@ public static class MockResponseExtensions
     {
         var mockHttpMethodMatcher = new MockHttpContentMatcher(headersPredicate);
         mockResponse.AddMatcher(mockHttpMethodMatcher);
+        return mockResponse;
+    }
+
+    public static IMockResponse ForCustomMatch(this IMockResponse mockResponse, IMockHttpMatcher customMatcher)
+    {
+        mockResponse.AddMatcher(customMatcher);
         return mockResponse;
     }
 }
