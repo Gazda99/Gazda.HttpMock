@@ -23,4 +23,23 @@ public class MockResponseTests
         //THEN
         Assert.That(result, Is.EqualTo(val));
     }
+
+    [Test]
+    public void ClearMatchers_Should_Clear_Matchers()
+    {
+        //GIVEN
+        var response = Substitute.For<HttpResponseMessage>();
+        var request = Substitute.For<HttpRequestMessage>();
+        var mockResponse = new MockResponse(response);
+        var matcher = Substitute.For<IMockHttpMatcher>();
+        matcher.Match(Arg.Any<HttpRequestMessage>()).Returns(false);
+        mockResponse.AddMatcher(matcher);
+        mockResponse.ClearMatchers();
+
+        //WHEN
+        var result = mockResponse.Match(request);
+
+        //THEN
+        Assert.That(result, Is.EqualTo(true));
+    }
 }

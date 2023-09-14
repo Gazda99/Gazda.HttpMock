@@ -27,6 +27,11 @@ public class MockResponse : IMockResponse
         _matchers.AddRange(matchers);
     }
 
+    public void ClearMatchers()
+    {
+        _matchers.Clear();
+    }
+
     public bool Match(HttpRequestMessage request)
     {
         return _matchers.TrueForAll(matcher => matcher.Match(request));
