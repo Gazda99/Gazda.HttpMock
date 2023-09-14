@@ -1,4 +1,5 @@
-﻿using Gazda.HttpMock.Matchers;
+﻿using System.Net.Http.Headers;
+using Gazda.HttpMock.Matchers;
 using Gazda.HttpMock.Tests.Helpers;
 
 namespace Gazda.HttpMock.Tests;
@@ -44,5 +45,33 @@ public class MockResponseExtensionsTests
 
         //THEN
         mockResponse.Received(1).AddMatcher(Arg.Is<IMockHttpMatcher>(x => x is MockHttpMethodMatcher));
+    }
+
+    [Test]
+    public void ForHeaders_Should_Add_MockHttpHeaderMatcher()
+    {
+        //GIVEN
+        var mockResponse = Substitute.For<IMockResponse>();
+        var predicate = Substitute.For<Predicate<HttpHeaders>>();
+
+        //WHEN
+        mockResponse.ForHeaders(predicate);
+
+        //THEN
+        mockResponse.Received(1).AddMatcher(Arg.Is<IMockHttpMatcher>(x => x is MockHttpHeaderMatcher));
+    }
+
+    [Test]
+    public void ForContent_Should_Add_MockHttpContentMatcher()
+    {
+        //GIVEN
+        var mockResponse = Substitute.For<IMockResponse>();
+        var predicate = Substitute.For<Predicate<HttpContent?>>();
+
+        //WHEN
+        mockResponse.ForContent(predicate);
+
+        //THEN
+        mockResponse.Received(1).AddMatcher(Arg.Is<IMockHttpMatcher>(x => x is MockHttpContentMatcher));
     }
 }

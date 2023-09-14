@@ -1,4 +1,5 @@
-﻿using Gazda.HttpMock.Matchers;
+﻿using System.Net.Http.Headers;
+using Gazda.HttpMock.Matchers;
 
 namespace Gazda.HttpMock;
 
@@ -21,6 +22,22 @@ public static class MockResponseExtensions
         HttpMethod method)
     {
         var mockHttpMethodMatcher = new MockHttpMethodMatcher(method);
+        mockResponse.AddMatcher(mockHttpMethodMatcher);
+        return mockResponse;
+    }
+
+    public static IMockResponse ForHeaders(this IMockResponse mockResponse,
+        Predicate<HttpRequestHeaders> headersPredicate)
+    {
+        var mockHttpMethodMatcher = new MockHttpHeaderMatcher(headersPredicate);
+        mockResponse.AddMatcher(mockHttpMethodMatcher);
+        return mockResponse;
+    }
+
+    public static IMockResponse ForContent(this IMockResponse mockResponse,
+        Predicate<HttpContent?> headersPredicate)
+    {
+        var mockHttpMethodMatcher = new MockHttpContentMatcher(headersPredicate);
         mockResponse.AddMatcher(mockHttpMethodMatcher);
         return mockResponse;
     }
