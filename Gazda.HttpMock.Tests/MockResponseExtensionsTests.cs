@@ -16,7 +16,7 @@ public class MockResponseExtensionsTests
         //WHEN - THEN
         var res = mockHttpMessageHandler.PrepareMockResponse(response);
 
-        Assert.Pass();
+        Assert.That(res is IMockResponse);
     }
 
     [Test]
@@ -87,6 +87,20 @@ public class MockResponseExtensionsTests
 
         //THEN
         mockResponse.Received(1).AddMatcher(Arg.Is<IMockHttpMatcher>(x => x is MockHttpContentMatcher));
+    }
+
+    [Test]
+    public void ForContent_Async_Version_Should_Add_MockHttpContentAsyncMatcher()
+    {
+        //GIVEN
+        var mockResponse = Substitute.For<IMockResponse>();
+        var predicate = Substitute.For<Func<HttpContent?, Task<bool>>>();
+
+        //WHEN
+        mockResponse.ForContent(predicate);
+
+        //THEN
+        mockResponse.Received(1).AddMatcher(Arg.Is<IMockHttpMatcher>(x => x is MockHttpContentAsyncMatcher));
     }
 
     [Test]
