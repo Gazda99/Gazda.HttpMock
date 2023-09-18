@@ -33,7 +33,9 @@ public class MockResponseTests
         var mockResponse = new MockResponse(response);
         var matcher = Substitute.For<IMockHttpMatcher>();
         matcher.Match(Arg.Any<HttpRequestMessage>()).Returns(false);
-        mockResponse.AddMatcher(matcher);
+        var matcher2 = Substitute.For<IMockHttpMatcher>();
+        matcher2.Match(Arg.Any<HttpRequestMessage>()).Returns(false);
+        mockResponse.AddMatchers(new[] { matcher, matcher2 });
         mockResponse.ClearMatchers();
 
         //WHEN

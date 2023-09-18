@@ -22,8 +22,7 @@ public class MockHttpMessageHandlerTests
         mockResponse2.GetResponse().Returns(response2);
 
         var mockHttpMessageHandler = new MockHttpMessageHandler();
-        mockHttpMessageHandler.RespondWith(mockResponse);
-        mockHttpMessageHandler.RespondWith(mockResponse2);
+        mockHttpMessageHandler.RespondWith(new []{mockResponse, mockResponse2});
 
         var client = mockHttpMessageHandler.ToHttpClient();
         client.BaseAddress = new Uri(new Faker().Internet.Url());
