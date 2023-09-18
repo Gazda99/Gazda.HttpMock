@@ -6,5 +6,9 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+        <InternalsVisibleTo Include="Gazda.HttpMock.Tests"/>
+    </ItemGroup>
+
 
 </Project>
