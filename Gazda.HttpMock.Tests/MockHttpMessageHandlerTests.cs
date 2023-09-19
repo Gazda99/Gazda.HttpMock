@@ -22,7 +22,7 @@ public class MockHttpMessageHandlerTests
         mockResponse2.GetResponse().Returns(response2);
 
         var mockHttpMessageHandler = new MockHttpMessageHandler();
-        mockHttpMessageHandler.RespondWith(new []{mockResponse, mockResponse2});
+        mockHttpMessageHandler.RespondWith(new[] { mockResponse, mockResponse2 });
 
         var client = mockHttpMessageHandler.ToHttpClient();
         client.BaseAddress = new Uri(new Faker().Internet.Url());
@@ -50,11 +50,14 @@ public class MockHttpMessageHandlerTests
         client.BaseAddress = new Uri(new Faker().Internet.Url());
 
         //WHEN - THEN
-        var mockResponseCheck = mockHttpMessageHandler.AssertResponseReturned(mockResponse, 0);
-        var mockResponseCheck2 = mockHttpMessageHandler.AssertResponseReturned(mockResponse, 1);
+        var mockResponseCheck = mockHttpMessageHandler.AssertResponseNotReturned(mockResponse);
+        var mockResponseCheck2 = mockHttpMessageHandler.AssertResponseReturned(mockResponse, 0);
+        var mockResponseCheck3 = mockHttpMessageHandler.AssertResponseReturned(mockResponse, 1);
+        
         //THEN
         Assert.That(mockResponseCheck, Is.True);
-        Assert.That(mockResponseCheck2, Is.False);
+        Assert.That(mockResponseCheck2, Is.True);
+        Assert.That(mockResponseCheck3, Is.False);
     }
 
     [Test]
