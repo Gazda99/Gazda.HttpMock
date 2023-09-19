@@ -45,17 +45,17 @@ public static class MockResponseExtensions
     }
 
     public static IMockResponse ForContent(this IMockResponse mockResponse,
-        Predicate<HttpContent?> headersPredicate)
+        Predicate<HttpContent?> contentPredicate)
     {
-        var mockHttpMethodMatcher = new MockHttpContentMatcher(headersPredicate);
+        var mockHttpMethodMatcher = new MockHttpContentMatcher(contentPredicate);
         mockResponse.AddMatcher(mockHttpMethodMatcher);
         return mockResponse;
     }
 
     public static IMockResponse ForContent(this IMockResponse mockResponse,
-        Func<HttpContent?, Task<bool>> headersPredicate)
+        Func<HttpContent?, Task<bool>> contentPredicate)
     {
-        var mockHttpMethodMatcher = new MockHttpContentAsyncMatcher(headersPredicate);
+        var mockHttpMethodMatcher = new MockHttpContentAsyncMatcher(contentPredicate);
         mockResponse.AddMatcher(mockHttpMethodMatcher);
         return mockResponse;
     }
