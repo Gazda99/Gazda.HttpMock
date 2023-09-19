@@ -69,6 +69,6 @@ public class MockHttpMessageHandler : HttpMessageHandler, IMockHttpMessageHandle
     public int CountResponseReturns(IMockResponse response)
     {
         var isFound = _mockResponsesWithReturnCount.TryGetValue(response, out var found);
-        return !isFound ? 0 : found;
+        return isFound ? found : 0;
     }
 }
