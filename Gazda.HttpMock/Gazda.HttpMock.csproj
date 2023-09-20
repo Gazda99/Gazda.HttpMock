@@ -9,11 +9,17 @@
 
         <Authors>Gazda</Authors>
         <Company>Gazda</Company>
-        <Description>Provides ability to easy mock the HttpClient for your unit tests</Description>
+        <Description>
+            Provides ability to easy mock the HttpClient for your unit tests
+        </Description>
         <PackageId>Gazda.HttpMock</PackageId>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageTags>Unit Tests, Mocking, HttpClient</PackageTags>
         <RepositoryUrl>https://github.com/Gazda99/Gazda.HttpMock</RepositoryUrl>
+        <PackageReleaseNotes>
+            1.0.0 - 2023-IX-20 - First release
+        </PackageReleaseNotes>
+        <Title>Gazda.HttpMock</Title>
     </PropertyGroup>
 
     <ItemGroup>
