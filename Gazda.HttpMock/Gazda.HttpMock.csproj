@@ -7,13 +7,13 @@
 
         <Version>1.0.0</Version>
 
-        <Authors>Gazda</Authors>
-        <Company>Gazda</Company>
+        <Authors>Jakub "Gazda"</Authors>
         <Description>
             Provides ability to easy mock the HttpClient for your unit tests
         </Description>
         <PackageId>Gazda.HttpMock</PackageId>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageTags>Unit Tests, Mocking, HttpClient</PackageTags>
         <RepositoryUrl>https://github.com/Gazda99/Gazda.HttpMock</RepositoryUrl>
         <PackageReleaseNotes>
@@ -21,6 +21,11 @@
         </PackageReleaseNotes>
         <Title>Gazda.HttpMock</Title>
     </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="..\nuget-readme.md" Pack="true" PackagePath="">
+        </None>
+    </ItemGroup>
 
     <ItemGroup>
         <InternalsVisibleTo Include="Gazda.HttpMock.Tests"/>
