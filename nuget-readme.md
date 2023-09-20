@@ -1,11 +1,11 @@
-
-## Gazda.HttpMock
+﻿## Gazda.HttpMock
 
 Gazda.HttpMock is a library that expose tools for mocking the C# HttpClient class.
 It is especially useful for Unit Testing.
 
 
 ---
+
 ### How to use
 
 ```csharp
@@ -29,10 +29,10 @@ bool check = mockHttMessageHandler.AssertResponseReturned(mockedResponse, 2);
 ```
 
 ---
+
 #### Available methods to prepare mock HttpResponseMessage to match some request.
 
-<br/>
-
+\
 All methods are extensions methods on IMockResponse interface, and they might be chained in fluent way.
 
 ```csharp
@@ -41,15 +41,7 @@ IMockResponse mockedResponse;
 mockedResponse.ForXYZ(...).ForABC(...);
 ```
 
-<br/>
-
-<table>
-<tr>
-<td> Method </td> <td> Description </td>
-</tr>
-
-<tr>
-<td>
+---
 
 Default MockHttpMatcher
 
@@ -57,160 +49,90 @@ Default MockHttpMatcher
 .For(Predicate<HttpRequestMessage> p)
 ```
 
-</td>
-<td>
-Predicate run against request (HttpRequestMessage)
-
-Example:
+Predicate run against request (HttpRequestMessage). Example:
 
 ```csharp
 .For(x => x.Method == HttpMethod.Get)
 ```
 
-</td>
-</tr>
-
-<tr>
-<td>
-
+---
 MockHttpUrlMatcher
 
 ```csharp
 .ForUrl(Predicate<string> p)
 ```
 
-</td>
-<td>
-Predicate run against request.RequestUri.ToString() (string)
-
-Example:
+Predicate run against request.RequestUri.ToString() (string). Example:
 
 ```csharp
 .For(x => x.Contains("url_part"))
 ```
 
-</td>
-</tr>
-
-<tr>
-<td>
-
+---
 MockHttpMethodMatcher
 
 ```csharp
 .ForMethod(HttpMethod method)
 ```
 
-</td>
-<td>
-Predicate run against request.Method (HttpMethod)
-
-Example:
+Predicate run against request.Method (HttpMethod). Example:
 
 ```csharp
 .ForMethod(HttpMethod.Post)
 ```
 
-</td>
-</tr>
-
-<tr>
-<td>
-
+---
 MockHttpHeaderMatcher
 
 ```csharp
 .ForHeaders(Predicate<HttpRequestHeaders> p)
 ```
 
-</td>
-<td>
-Predicate run against request.Headers (HttpRequestHeaders)
-
-Example:
+Predicate run against request.Headers (HttpRequestHeaders). Example:
 
 ```csharp
 .ForHeaders(x => x.Contains("some_header"))
 ```
 
-</td>
-</tr>
-
-<tr>
-<td>
-
+---
 MockHttpContentMatcher
 
 ```csharp
 .ForContent(Predicate<HttpContent?> p)
 ```
 
-</td>
-<td>
-Predicate run against request.Content (HttpContent?)
-
-Example:
+Predicate run against request.Content (HttpContent?). Example:
 
 ```csharp
 .ForContent(x => x != null)
 ```
 
-</td>
-</tr>
-
-<tr>
-<td>
-
+---
 MockHttpContentAsyncMatcher
 
 ```csharp
 .ForContent(Func<HttpContent?, Task<bool>> p)
 ```
 
-</td>
-<td>
-Predicate run against request.Content (HttpContent?)
-
-Example:
+Predicate run against request.Content (HttpContent?). Example:
 
 ```csharp
 .ForContent(async x => (await x.ReadAsStringAsync()).Equals("hello"))
 ```
 
-</td>
-</tr>
-
-<tr>
-<td>
-
+---
 CustomMatcher
 
 ```csharp
 .ForCustomMatch(IMockHttpMatcher customMatcher)
 ```
 
-</td>
-<td>
-
-Pass your own implementation of IMockHttpMatcher
-
-Example:
+Pass your own implementation of IMockHttpMatcher . Example:
 
 ```csharp
 IMockHttpMatcher customMatcher = new YourOwnCustomMatcher();
 .ForCustomMatch(customMatcher)
 ```
-
-</td>
-</tr>
-
-
-
-
-
-
-
-</table>
 
 ---
 
@@ -226,8 +148,6 @@ _"No mocked response was found. Returning default."_
 
 #### Available methods to assert response was successfully returned from HttpClient.
 
-<br/>
-
 ```csharp
 var mockHttMessageHandler = new MockHttpMessageHandler();
 var response = new HttpResponseMessage();
@@ -235,57 +155,24 @@ IMockResponse mockedResponse = mockHttMessageHandler.PrepareMockResponse(respons
 var check = mockHttMessageHandler.CheckOrAssertXYZ(mockedResponse);
 ```
 
+---
 
-<br/>
-
-<table>
-
-<tr>
-<td> Method </td> <td> Description </td>
-</tr>
-
-<tr>
-<td>
+Asserts that given response was returned 'n' times:
 
 ```csharp
 bool AssertResponseReturned(IMockResponse response, int n)
 ```
 
-</td>
-<td>
-Asserts that given response was returned 'n' times.
-</td>
-</tr>
-
-<tr>
-<td>
+Asserts that given response was not returned at all:
 
 ```csharp
 bool AssertResponseNotReturned(IMockResponse response)
 ```
 
-</td>
-<td>
-Asserts that given response was not returned at all.
-</td>
-</tr>
-
-<tr>
-<td>
+Returns count of returns of given response:
 
 ```csharp
 int CountResponseReturns(IMockResponse response)
 ```
-
-</td>
-<td>
-Returns count of returns of given response.
-</td>
-</tr>
-
-
-
-
-</table>
 
 ---
