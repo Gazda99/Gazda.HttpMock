@@ -31,7 +31,7 @@ public class MockHttpMessageHandlerTests
         await client.SendAsync(request);
         await client.SendAsync(request2);
 
-        var mockResponseCheck = mockHttpMessageHandler.AssertResponseReturned(mockResponse, 1);
+        var mockResponseCheck = mockHttpMessageHandler.AssertResponseReturned(mockResponse);
         var mockResponseCheck2 = mockHttpMessageHandler.AssertResponseReturned(mockResponse2, 0);
 
         //THEN
@@ -53,7 +53,7 @@ public class MockHttpMessageHandlerTests
         var mockResponseCheck = mockHttpMessageHandler.AssertResponseNotReturned(mockResponse);
         var mockResponseCheck2 = mockHttpMessageHandler.AssertResponseReturned(mockResponse, 0);
         var mockResponseCheck3 = mockHttpMessageHandler.AssertResponseReturned(mockResponse, 1);
-        
+
         //THEN
         Assert.That(mockResponseCheck, Is.True);
         Assert.That(mockResponseCheck2, Is.True);
@@ -105,7 +105,6 @@ public class MockHttpMessageHandlerTests
         mockResponse.Match(request).Returns(false);
         mockResponse.GetResponse().Returns(response);
 
-
         var mockHttpMessageHandler = new MockHttpMessageHandler();
         mockHttpMessageHandler.RespondWith(mockResponse);
 
@@ -120,5 +119,66 @@ public class MockHttpMessageHandlerTests
         Assert.That(res.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
         var content = await res.Content.ReadAsStringAsync();
         Assert.That(content, Is.EqualTo("No mocked response was found. Returning default."));
+    }
+
+    [Test]
+    public async Task SendAsync_Should_Return_Default_Response_Set_By_User_When_No_MockResponse_Match()
+    {
+        //GIVEN
+        var request = Substitute.For<HttpRequestMessage>();
+        var response = Substitute.For<HttpResponseMessage>();
+        var mockResponse = Substitute.For<IMockResponse>();
+        mockResponse.Match(request).Returns(false);
+        mockResponse.GetResponse().Returns(response);
+        var defaultResponse = Substitute.For<HttpResponseMessage>();
+
+        var mockHttpMessageHandler = new MockHttpMessageHandler();
+        mockHttpMessageHandler.RespondWith(mockResponse);
+        mockHttpMessageHandler.SetDefaultResponse(defaultResponse);
+
+        var client = mockHttpMessageHandler.ToHttpClient();
+        client.BaseAddress = new Uri(new Faker().Internet.Url());
+
+        //WHEN
+        var res = await client.SendAsync(request);
+
+        //THEN
+        Assert.That(res, Is.Not.Null);
+        Assert.That(res, Is.EqualTo(defaultResponse));
+    }
+
+    [Test]
+    public async Task ClearResponses_Should_Clear_AllResponses()
+    {
+        //GIVEN
+        var request = Substitute.For<HttpRequestMessage>();
+        var request2 = Substitute.For<HttpRequestMessage>();
+        var response = Substitute.For<HttpResponseMessage>();
+        var response2 = Substitute.For<HttpResponseMessage>();
+        var mockResponse = Substitute.For<IMockResponse>();
+        mockResponse.Match(request).Returns(true);
+        mockResponse.GetResponse().Returns(response);
+
+        var mockResponse2 = Substitute.For<IMockResponse>();
+        mockResponse2.Match(request2).Returns(false);
+        mockResponse2.GetResponse().Returns(response2);
+
+        var mockHttpMessageHandler = new MockHttpMessageHandler();
+        mockHttpMessageHandler.RespondWith(new[] { mockResponse, mockResponse2 });
+
+        var client = mockHttpMessageHandler.ToHttpClient();
+        client.BaseAddress = new Uri(new Faker().Internet.Url());
+
+        //WHEN
+        mockHttpMessageHandler.ClearResponses();
+        await client.SendAsync(request);
+        await client.SendAsync(request2);
+
+        var mockResponseCheck = mockHttpMessageHandler.AssertResponseNotReturned(mockResponse);
+        var mockResponseCheck2 = mockHttpMessageHandler.AssertResponseNotReturned(mockResponse2);
+
+        //THEN
+        Assert.That(mockResponseCheck, Is.True);
+        Assert.That(mockResponseCheck2, Is.True);
     }
 }

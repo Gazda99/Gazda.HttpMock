@@ -2,11 +2,15 @@
 
 namespace Gazda.HttpMock;
 
+/// <summary>
+/// Mock implementation of HttpMessageHandler.
+/// </summary>
 public class MockHttpMessageHandler : HttpMessageHandler, IMockHttpMessageHandler
 {
+    private readonly object _lock = new object();
     private readonly Dictionary<IMockResponse, int> _mockResponsesWithReturnCount = new();
 
-    private readonly HttpResponseMessage _defaultResponse = new HttpResponseMessage(HttpStatusCode.NotFound)
+    private HttpResponseMessage _defaultResponse = new HttpResponseMessage(HttpStatusCode.NotFound)
     {
         Content = new StringContent("No mocked response was found. Returning default.")
     };
@@ -16,10 +20,13 @@ public class MockHttpMessageHandler : HttpMessageHandler, IMockHttpMessageHandle
     {
         try
         {
-            var mockedResponse = _mockResponsesWithReturnCount.First(x => x.Key.Match(request)).Key;
-            var response = mockedResponse.GetResponse();
-            _mockResponsesWithReturnCount[mockedResponse] += 1;
-            return Task.FromResult(response);
+            lock (_lock)
+            {
+                var mockedResponse = _mockResponsesWithReturnCount.First(x => x.Key.Match(request)).Key;
+                var response = mockedResponse.GetResponse();
+                _mockResponsesWithReturnCount[mockedResponse] += 1;
+                return Task.FromResult(response);
+            }
         }
         catch (InvalidOperationException ex)
         {
@@ -27,48 +34,98 @@ public class MockHttpMessageHandler : HttpMessageHandler, IMockHttpMessageHandle
         }
     }
 
+    /// <summary>
+    /// Adds IMockResponse <paramref name="mockResponse"/> to list of possible returns from this message handler.
+    /// </summary>
     public IMockHttpMessageHandler RespondWith(IMockResponse mockResponse)
     {
-        _mockResponsesWithReturnCount.TryAdd(mockResponse, 0);
+        lock (_lock)
+            _mockResponsesWithReturnCount.TryAdd(mockResponse, 0);
         return this;
     }
 
+    /// <summary>
+    /// Adds collection of IMockResponse <paramref name="mockResponses"/> to list of possible returns from this message handler.
+    /// </summary>
     public IMockHttpMessageHandler RespondWith(IEnumerable<IMockResponse> mockResponses)
     {
-        foreach (var mockResponse in mockResponses)
+        lock (_lock)
         {
-            _mockResponsesWithReturnCount.TryAdd(mockResponse, 0);
+            foreach (var mockResponse in mockResponses)
+            {
+                _mockResponsesWithReturnCount.TryAdd(mockResponse, 0);
+            }
         }
 
         return this;
     }
 
+    /// <summary>
+    /// Clears all possible IMockResponse returns.
+    /// </summary>
+    public void ClearResponses()
+    {
+        lock (_lock)
+            _mockResponsesWithReturnCount.Clear();
+    }
+
+    /// <summary>
+    /// Sets the default response to <paramref name="defaultHttpResponseMessage"/>
+    /// </summary>
+    public void SetDefaultResponse(HttpResponseMessage defaultHttpResponseMessage)
+    {
+        _defaultResponse = defaultHttpResponseMessage;
+    }
+
+    /// <returns>New HttpClient using this MockHttpMessageHandler.</returns>
     public HttpClient ToHttpClient()
     {
         return new HttpClient(this);
     }
 
-    public bool AssertResponseReturned(IMockResponse response, int times)
+    /// <summary>
+    /// Checks if <paramref name="response"/> was returned <paramref name="n"/> times.
+    /// </summary>
+    /// <param name="response">IMockResponse to check.</param>
+    /// <param name="n">How many times should <paramref name="response"/> be returned.</param>
+    /// <returns>True if assertion was correct.</returns>
+    public bool AssertResponseReturned(IMockResponse response, int n = 1)
     {
-        var isFound = _mockResponsesWithReturnCount.TryGetValue(response, out var found);
-        if (!isFound)
-            return times == 0;
+        lock (_lock)
+        {
+            var isFound = _mockResponsesWithReturnCount.TryGetValue(response, out var found);
+            if (!isFound)
+                return n == 0;
 
-        return times == found;
+            return n == found;
+        }
     }
 
+    /// <summary>
+    /// Checks if <paramref name="response"/> was not returned at all.
+    /// </summary>
+    /// <param name="response">IMockResponse to check.</param>
+    /// <returns>True if assertion was correct.</returns>
     public bool AssertResponseNotReturned(IMockResponse response)
     {
-        var isFound = _mockResponsesWithReturnCount.TryGetValue(response, out var found);
-        if (!isFound)
-            return true;
+        lock (_lock)
+        {
+            var isFound = _mockResponsesWithReturnCount.TryGetValue(response, out var found);
+            if (!isFound)
+                return true;
 
-        return found == 0;
+            return found == 0;
+        }
     }
 
+    /// <param name="response">IMockResponse to check.</param>
+    /// <returns>How many times, given response was returned.</returns>
     public int CountResponseReturns(IMockResponse response)
     {
-        var isFound = _mockResponsesWithReturnCount.TryGetValue(response, out var found);
-        return isFound ? found : 0;
+        lock (_lock)
+        {
+            var isFound = _mockResponsesWithReturnCount.TryGetValue(response, out var found);
+            return isFound ? found : 0;
+        }
     }
 }
