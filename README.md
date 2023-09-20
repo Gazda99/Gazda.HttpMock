@@ -258,7 +258,7 @@ var check = mockHttMessageHandler.CheckOrAssertXYZ(mockedResponse);
 <td>
 
 ```csharp
-bool AssertResponseReturned(IMockResponse response, int n)
+bool AssertResponseReturned(IMockResponse response, int n = 1)
 ```
 
 </td>

@@ -160,7 +160,7 @@ var check = mockHttMessageHandler.CheckOrAssertXYZ(mockedResponse);
 Asserts that given response was returned 'n' times:
 
 ```csharp
-bool AssertResponseReturned(IMockResponse response, int n)
+bool AssertResponseReturned(IMockResponse response, int n = 1)
 ```
 
 Asserts that given response was not returned at all:

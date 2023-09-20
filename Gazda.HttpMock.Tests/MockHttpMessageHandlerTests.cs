@@ -31,7 +31,7 @@ public class MockHttpMessageHandlerTests
         await client.SendAsync(request);
         await client.SendAsync(request2);
 
-        var mockResponseCheck = mockHttpMessageHandler.AssertResponseReturned(mockResponse, 1);
+        var mockResponseCheck = mockHttpMessageHandler.AssertResponseReturned(mockResponse);
         var mockResponseCheck2 = mockHttpMessageHandler.AssertResponseReturned(mockResponse2, 0);
 
         //THEN

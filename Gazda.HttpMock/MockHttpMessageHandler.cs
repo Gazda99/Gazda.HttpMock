@@ -48,7 +48,7 @@ public class MockHttpMessageHandler : HttpMessageHandler, IMockHttpMessageHandle
         return new HttpClient(this);
     }
 
-    public bool AssertResponseReturned(IMockResponse response, int times)
+    public bool AssertResponseReturned(IMockResponse response, int times = 1)
     {
         var isFound = _mockResponsesWithReturnCount.TryGetValue(response, out var found);
         if (!isFound)
