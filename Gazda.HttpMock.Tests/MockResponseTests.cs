@@ -44,4 +44,18 @@ public class MockResponseTests
         //THEN
         Assert.That(result, Is.EqualTo(true));
     }
+
+    [Test]
+    public void GetResponse_Should_Return_Real_HttpResponseMessage()
+    {
+        //GIVEN
+        var response = Substitute.For<HttpResponseMessage>();
+        var mockResponse = new MockResponse(response);
+
+        //WHEN
+        var responseFromMockResponse = mockResponse.GetResponse();
+
+        //THEN
+        Assert.That(response, Is.EqualTo(responseFromMockResponse));
+    }
 }
