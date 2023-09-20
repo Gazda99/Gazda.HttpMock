@@ -43,6 +43,11 @@ public class MockHttpMessageHandler : HttpMessageHandler, IMockHttpMessageHandle
         return this;
     }
 
+    public void ClearResponses()
+    {
+        _mockResponsesWithReturnCount.Clear();
+    }
+
     public HttpClient ToHttpClient()
     {
         return new HttpClient(this);
