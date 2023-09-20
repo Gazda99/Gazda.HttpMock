@@ -13,7 +13,7 @@
         </Description>
         <PackageId>Gazda.HttpMock</PackageId>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageReadmeFile>nuget-readme.md</PackageReadmeFile>
         <PackageTags>Unit Tests, Mocking, HttpClient</PackageTags>
         <RepositoryUrl>https://github.com/Gazda99/Gazda.HttpMock</RepositoryUrl>
         <PackageReleaseNotes>
