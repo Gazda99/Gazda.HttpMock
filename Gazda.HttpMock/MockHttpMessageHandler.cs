@@ -10,7 +10,7 @@ public class MockHttpMessageHandler : HttpMessageHandler, IMockHttpMessageHandle
     private readonly object _lock = new object();
     private readonly Dictionary<IMockResponse, int> _mockResponsesWithReturnCount = new();
 
-    private readonly HttpResponseMessage _defaultResponse = new HttpResponseMessage(HttpStatusCode.NotFound)
+    private HttpResponseMessage _defaultResponse = new HttpResponseMessage(HttpStatusCode.NotFound)
     {
         Content = new StringContent("No mocked response was found. Returning default.")
     };
@@ -61,12 +61,20 @@ public class MockHttpMessageHandler : HttpMessageHandler, IMockHttpMessageHandle
     }
 
     /// <summary>
-    /// Clear all possible IMockResponse returns.
+    /// Clears all possible IMockResponse returns.
     /// </summary>
     public void ClearResponses()
     {
         lock (_lock)
             _mockResponsesWithReturnCount.Clear();
+    }
+
+    /// <summary>
+    /// Sets the default response to <paramref name="defaultHttpResponseMessage"/>
+    /// </summary>
+    public void SetDefaultResponse(HttpResponseMessage defaultHttpResponseMessage)
+    {
+        _defaultResponse = defaultHttpResponseMessage;
     }
 
     /// <returns>New HttpClient using this MockHttpMessageHandler.</returns>
@@ -76,7 +84,7 @@ public class MockHttpMessageHandler : HttpMessageHandler, IMockHttpMessageHandle
     }
 
     /// <summary>
-    /// Check if <paramref name="response"/> was returned <paramref name="n"/> times.
+    /// Checks if <paramref name="response"/> was returned <paramref name="n"/> times.
     /// </summary>
     /// <param name="response">IMockResponse to check.</param>
     /// <param name="n">How many times should <paramref name="response"/> be returned.</param>
@@ -94,7 +102,7 @@ public class MockHttpMessageHandler : HttpMessageHandler, IMockHttpMessageHandle
     }
 
     /// <summary>
-    /// 
+    /// Checks if <paramref name="response"/> was not returned at all.
     /// </summary>
     /// <param name="response">IMockResponse to check.</param>
     /// <returns>True if assertion was correct.</returns>

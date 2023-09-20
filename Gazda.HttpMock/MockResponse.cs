@@ -38,7 +38,7 @@ public class MockResponse : IMockResponse
     }
 
     /// <summary>
-    /// Clear all existing matchers.
+    /// Clears all existing matchers.
     /// </summary>
     public void ClearMatchers()
     {
@@ -46,7 +46,7 @@ public class MockResponse : IMockResponse
     }
 
     /// <summary>
-    /// Run all matchers against <paramref name="request"/>.
+    /// Runs all matchers against <paramref name="request"/>.
     /// </summary>
     /// <returns>True, when all matchers were fulfilled.</returns>
     public bool Match(HttpRequestMessage request)

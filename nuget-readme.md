@@ -9,9 +9,9 @@ It is especially useful for Unit Testing.
 ### How to use
 
 ```csharp
-var mockHttMessageHandler = new MockHttpMessageHandler();
+var mockHttpMessageHandler = new MockHttpMessageHandler();
 var response = new HttpResponseMessage();
-IMockResponse mockedResponse = mockHttMessageHandler.PrepareMockResponse(response)
+IMockResponse mockedResponse = mockHttpMessageHandler.PrepareMockResponse(response)
     .ForUrl(x => x.Contains("some_url"))
     .ForContent(x => x.ReadAsStream().Length > 0)
     .ForContent(async x => (await x.ReadAsStringAsync()) == "content");
@@ -20,11 +20,11 @@ IMockResponse mockedResponse = mockHttMessageHandler.PrepareMockResponse(respons
     .For(x=> ...your custom logic...)
     .ForCustomMatch((IMockHttpMatcher) yourCustomMatcher);
 
-HttpClient client = mockHttMessageHandler.ToHttpClient();
+HttpClient client = mockHttpMessageHandler.ToHttpClient();
 client.SendAsync(new HttpRequestMessage());
 
-int count = mockHttMessageHandler.CountResponseReturns(mockedResponse);
-bool check = mockHttMessageHandler.AssertResponseReturned(mockedResponse, 2);
+int count = mockHttpMessageHandler.CountResponseReturns(mockedResponse);
+bool check = mockHttpMessageHandler.AssertResponseReturned(mockedResponse, 2);
 
 ```
 
@@ -144,15 +144,24 @@ Response which is:
 404 Not Found with content
 _"No mocked response was found. Returning default."_
 
+\
+You can also set your own default response using:
+
+```csharp
+var mockHttpMessageHandler = new MockHttpMessageHandler();
+var newDefaultResponse = new HttpResponseMessage();
+mockHttpMessageHandler.SetDefaultResponse(newDefaultResponse);
+```
+
 ---
 
 #### Available methods to assert response was successfully returned from HttpClient.
 
 ```csharp
-var mockHttMessageHandler = new MockHttpMessageHandler();
+var mockHttpMessageHandler = new MockHttpMessageHandler();
 var response = new HttpResponseMessage();
-IMockResponse mockedResponse = mockHttMessageHandler.PrepareMockResponse(response)
-var check = mockHttMessageHandler.CheckOrAssertXYZ(mockedResponse);
+IMockResponse mockedResponse = mockHttpMessageHandler.PrepareMockResponse(response)
+var check = mockHttpMessageHandler.CheckOrAssertXYZ(mockedResponse);
 ```
 
 ---
