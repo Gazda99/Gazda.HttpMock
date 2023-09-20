@@ -1,3 +1,12 @@
+[![Static Badge](https://img.shields.io/badge/Nuget-1.0.0-blue)](https://www.nuget.org/packages/Gazda.HttpMock)
+
+### Download & Install
+
+Nuget Package [Gazda.HttpMock](https://www.nuget.org/packages/Gazda.HttpMock)
+
+```
+Install-Package Gazda.HttpMock
+```
 
 ## Gazda.HttpMock
 
@@ -6,6 +15,7 @@ It is especially useful for Unit Testing.
 
 
 ---
+
 ### How to use
 
 ```csharp
@@ -29,6 +39,7 @@ bool check = mockHttMessageHandler.AssertResponseReturned(mockedResponse, 2);
 ```
 
 ---
+
 #### Available methods to prepare mock HttpResponseMessage to match some request.
 
 <br/>
@@ -234,7 +245,6 @@ var response = new HttpResponseMessage();
 IMockResponse mockedResponse = mockHttMessageHandler.PrepareMockResponse(response)
 var check = mockHttMessageHandler.CheckOrAssertXYZ(mockedResponse);
 ```
-
 
 <br/>
 
