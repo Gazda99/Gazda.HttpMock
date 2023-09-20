@@ -7,6 +7,7 @@ namespace Gazda.HttpMock;
 /// </summary>
 public class MockHttpMessageHandler : HttpMessageHandler, IMockHttpMessageHandler
 {
+    private readonly object _lock = new object();
     private readonly Dictionary<IMockResponse, int> _mockResponsesWithReturnCount = new();
 
     private readonly HttpResponseMessage _defaultResponse = new HttpResponseMessage(HttpStatusCode.NotFound)
@@ -19,10 +20,13 @@ public class MockHttpMessageHandler : HttpMessageHandler, IMockHttpMessageHandle
     {
         try
         {
-            var mockedResponse = _mockResponsesWithReturnCount.First(x => x.Key.Match(request)).Key;
-            var response = mockedResponse.GetResponse();
-            _mockResponsesWithReturnCount[mockedResponse] += 1;
-            return Task.FromResult(response);
+            lock (_lock)
+            {
+                var mockedResponse = _mockResponsesWithReturnCount.First(x => x.Key.Match(request)).Key;
+                var response = mockedResponse.GetResponse();
+                _mockResponsesWithReturnCount[mockedResponse] += 1;
+                return Task.FromResult(response);
+            }
         }
         catch (InvalidOperationException ex)
         {
@@ -35,7 +39,8 @@ public class MockHttpMessageHandler : HttpMessageHandler, IMockHttpMessageHandle
     /// </summary>
     public IMockHttpMessageHandler RespondWith(IMockResponse mockResponse)
     {
-        _mockResponsesWithReturnCount.TryAdd(mockResponse, 0);
+        lock (_lock)
+            _mockResponsesWithReturnCount.TryAdd(mockResponse, 0);
         return this;
     }
 
@@ -44,9 +49,12 @@ public class MockHttpMessageHandler : HttpMessageHandler, IMockHttpMessageHandle
     /// </summary>
     public IMockHttpMessageHandler RespondWith(IEnumerable<IMockResponse> mockResponses)
     {
-        foreach (var mockResponse in mockResponses)
+        lock (_lock)
         {
-            _mockResponsesWithReturnCount.TryAdd(mockResponse, 0);
+            foreach (var mockResponse in mockResponses)
+            {
+                _mockResponsesWithReturnCount.TryAdd(mockResponse, 0);
+            }
         }
 
         return this;
@@ -57,7 +65,8 @@ public class MockHttpMessageHandler : HttpMessageHandler, IMockHttpMessageHandle
     /// </summary>
     public void ClearResponses()
     {
-        _mockResponsesWithReturnCount.Clear();
+        lock (_lock)
+            _mockResponsesWithReturnCount.Clear();
     }
 
     /// <returns>New HttpClient using this MockHttpMessageHandler.</returns>
@@ -74,11 +83,14 @@ public class MockHttpMessageHandler : HttpMessageHandler, IMockHttpMessageHandle
     /// <returns>True if assertion was correct.</returns>
     public bool AssertResponseReturned(IMockResponse response, int n = 1)
     {
-        var isFound = _mockResponsesWithReturnCount.TryGetValue(response, out var found);
-        if (!isFound)
-            return n == 0;
+        lock (_lock)
+        {
+            var isFound = _mockResponsesWithReturnCount.TryGetValue(response, out var found);
+            if (!isFound)
+                return n == 0;
 
-        return n == found;
+            return n == found;
+        }
     }
 
     /// <summary>
@@ -88,18 +100,24 @@ public class MockHttpMessageHandler : HttpMessageHandler, IMockHttpMessageHandle
     /// <returns>True if assertion was correct.</returns>
     public bool AssertResponseNotReturned(IMockResponse response)
     {
-        var isFound = _mockResponsesWithReturnCount.TryGetValue(response, out var found);
-        if (!isFound)
-            return true;
+        lock (_lock)
+        {
+            var isFound = _mockResponsesWithReturnCount.TryGetValue(response, out var found);
+            if (!isFound)
+                return true;
 
-        return found == 0;
+            return found == 0;
+        }
     }
 
     /// <param name="response">IMockResponse to check.</param>
     /// <returns>How many times, given response was returned.</returns>
     public int CountResponseReturns(IMockResponse response)
     {
-        var isFound = _mockResponsesWithReturnCount.TryGetValue(response, out var found);
-        return isFound ? found : 0;
+        lock (_lock)
+        {
+            var isFound = _mockResponsesWithReturnCount.TryGetValue(response, out var found);
+            return isFound ? found : 0;
+        }
     }
 }
