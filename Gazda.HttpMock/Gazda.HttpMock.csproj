@@ -5,18 +5,20 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
 
-        <Version>1.0.1</Version>
+        <Version>1.0.2</Version>
 
         <Authors>Jakub "Gazda"</Authors>
         <Description>
             Provides ability to easy mock the HttpClient for your unit tests
         </Description>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <PackageId>Gazda.HttpMock</PackageId>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>nuget-readme.md</PackageReadmeFile>
         <PackageTags>Unit Tests, Mocking, HttpClient</PackageTags>
         <RepositoryUrl>https://github.com/Gazda99/Gazda.HttpMock</RepositoryUrl>
         <PackageReleaseNotes>
+            1.0.2 - 2023-IX-27 - GenerateDocumentationFile
             1.0.1 - 2023-IX-20 - Adds method descriptions and some fixes that should have been there from the beginning
             1.0.0 - 2023-IX-20 - First release
         </PackageReleaseNotes>
