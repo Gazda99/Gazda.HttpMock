@@ -1,4 +1,4 @@
-[![Static Badge](https://img.shields.io/badge/Nuget-1.0.1-blue)](https://www.nuget.org/packages/Gazda.HttpMock)
+[![Static Badge](https://img.shields.io/badge/Nuget-1.0.2-blue)](https://www.nuget.org/packages/Gazda.HttpMock)
 
 ### Download & Install
 
